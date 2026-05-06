@@ -8,9 +8,10 @@ def pet_add(request):
 
 def pet_details(request,username,pet_slug):
     pet = Pet.objects.prefetch_related('photo_set').get(slug=pet_slug)
-
+    photos = pet.photo_set.all()
     context = {
-        'pet':pet
+        'pet':pet,
+        'photos':photos
     }
 
     return render(request,'pets/pet-details-page.html',context)

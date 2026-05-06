@@ -2,7 +2,6 @@
 
 <div class="card">
 
-    {% for photo in photos %}
     <div class="top">
         <div class="userDetails">
             <!-- Link to User Profile Page -->
@@ -27,6 +26,23 @@
                 <!-- if the photo has location -->
                 <span>{{ photo.location }}</span>
             </h3>
+            {% if editable %}
+
+                <div class="edit-delete-btns">
+
+                    <!-- Link to Edit Pet Photo Page -->
+                    <a href="#">
+                        <img class="edit-img" src="/static/images/edit-pen-icon-6.jpg"
+                             alt="edit button">
+                    </a>
+
+                    <!-- Link to Delete Pet Photo Page -->
+                    <a href="#">
+                        <img class="bin-img" src="/static/images/icon-remove-22.jpg" alt="bin button">
+                    </a>
+                </div>
+
+            {% endif %}
         </div>
     </div>
     <!-- End User Details and Image Location -->
@@ -43,18 +59,18 @@
             <div class="left">
                 <!-- Start Like Button -->
                 <span class="heart">
-                                <a href="{% url 'like' photo_id=photo.pk %}">
+                                <a href="{% url 'like' photo.pk %}">
                                     {% if photo.like_set.all %}
-                                    <i class="fa-solid fa-heart" style="color: #ed4040;"></i>
+                                        <i class="fa-solid fa-heart" style="color: #ed4040;"></i>
                                     {% else %}
-                                    <i class="fa-regular fa-heart"></i>
+                                        <i class="fa-regular fa-heart"></i>
                                     {% endif %}
                                 </a>
                             </span>
                 <!-- End Like Button -->
 
                 <!-- Start Share Button -->
-                <a href="#">
+                <a href="{% url 'share' photo.pk %}">
                     <i class="fa-solid fa-share"></i>
                 </a>
                 <!-- End Share Button -->
@@ -77,17 +93,21 @@
             </p>
         </a>
         {% endfor %}
-
-        <a href="#">
-            <h4 class="details">See details</h4>
-        </a>
+        {% if not editable %}
+            <a href="{% url 'photo-details' photo.pk %}">
+                <h4 class="details">See details</h4>
+            </a>
+        {% endif %}
 
         <!-- Date of Publication -->
         <h5 class="postTime">{{ photo.date_of_publication }}</h5>
+
+        {% if comments %}
+            {% include 'common/comment-section.html' %}
+        {% endif %}
 
         <!-- Start Add Comments Section -->
         {% include 'common/comment-form.html' %}
 
     </div>
-    {% endfor %}
 </div>
