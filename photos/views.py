@@ -10,12 +10,14 @@ def photo_add(request):
 
 def photo_details(request,pk):
 
-    photo = Photo.objects.get(pk=pk)
+    photo = Photo.objects.prefetch_related('comment_set', 'like_set').get(pk=pk)
     comments = photo.comment_set.all()
+    likes = photo.like_set.all()
 
     context = {
         "photo":photo,
-        'comments':comments
+        'comments':comments,
+        'likes':likes
     }
 
     return render(request,'photos/photo-details-page.html',context)

@@ -16,7 +16,7 @@ def common(request):
 
 
 
-def like_view(request,photo_id):
+def like_view(request, photo_id):
     photo = Photo.objects.get(pk=photo_id)
     liked_object = Like.objects.filter(to_photo_id=photo_id).first()
 

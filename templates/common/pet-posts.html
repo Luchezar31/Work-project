@@ -59,14 +59,14 @@
             <div class="left">
                 <!-- Start Like Button -->
                 <span class="heart">
-                                <a href="{% url 'like' photo.pk %}">
-                                    {% if photo.like_set.all %}
-                                        <i class="fa-solid fa-heart" style="color: #ed4040;"></i>
-                                    {% else %}
-                                        <i class="fa-regular fa-heart"></i>
-                                    {% endif %}
-                                </a>
-                            </span>
+                    <a href="{% url 'like' photo.pk %}">
+                        {% if photo.like_set.all %}
+                            <i class="fa-solid fa-heart" style="color: #ed4040;"></i>
+                        {% else %}
+                            <i class="fa-regular fa-heart"></i>
+                        {% endif %}
+                    </a>
+                </span>
                 <!-- End Like Button -->
 
                 <!-- Start Share Button -->
