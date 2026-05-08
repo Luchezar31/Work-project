@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 
+from common.forms import CommentForm
 from photos.forms import PhotoAddForm, PhotoEditForm
 from photos.models import Photo
 
@@ -24,11 +25,13 @@ def photo_details(request, pk):
     photo = Photo.objects.prefetch_related('comment_set', 'like_set').get(pk=pk)
     comments = photo.comment_set.all()
     likes = photo.like_set.all()
+    comment_form = CommentForm()
 
     context = {
         "photo": photo,
         'comments': comments,
-        'likes': likes
+        'likes': likes,
+        'comment_form':comment_form
     }
 
     return render(request, 'photos/photo-details-page.html', context)
@@ -54,6 +57,6 @@ def photo_edit(request, pk):
 
 def photo_delete(request,pk):
 
-    photo = Photo.objects.get(pk=pk).delete()
+    Photo.objects.get(pk=pk).delete()
 
     return redirect('home')

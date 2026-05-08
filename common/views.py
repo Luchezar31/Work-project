@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, resolve_url
 from pyperclip import copy
 
+from common.forms import CommentForm
 from common.models import Like
 from photos.models import Photo
 
@@ -8,8 +9,11 @@ from photos.models import Photo
 def common(request):
     all_photos = Photo.objects.all()
 
+    comment_form = CommentForm()
+
     context = {
-        'photos': all_photos
+        'photos': all_photos,
+        'comment_form':comment_form
     }
 
     return render(request,'common/home-page.html', context)
@@ -35,4 +39,18 @@ def share_view(request,photo_id):
 
     return redirect(request.META.get('HTTP_REFERER') + f'#{photo_id}')
 
+
+def add_comment_view(request,photo_id):
+
+    if request.method == "POST":
+        photo = Photo.objects.get(pk=photo_id)
+        comment_form = CommentForm(request.POST)
+
+        if comment_form.is_valid():
+            comment = comment_form.save(commit=False)
+            comment.to_photo = photo
+            comment.save()
+            return redirect(request.META.get("HTTP_REFERER") + f'#{photo_id}')
+
+    return redirect(request.META.get("HTTP_REFERER") + f'#{photo_id}')
 
