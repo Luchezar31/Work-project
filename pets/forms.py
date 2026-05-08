@@ -1,6 +1,6 @@
 from django import forms
 
-from pets.mixins import ReadOnlyMixin
+from common.mixins import ReadOnlyMixin
 from pets.models import Pet
 
 
