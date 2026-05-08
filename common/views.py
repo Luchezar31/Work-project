@@ -1,19 +1,25 @@
 from django.shortcuts import render, redirect, resolve_url
 from pyperclip import copy
 
-from common.forms import CommentForm
+from common.forms import CommentForm, SearchForm
 from common.models import Like
 from photos.models import Photo
 
 
 def common(request):
-    all_photos = Photo.objects.all()
-
+    all_photos = Photo.objects.prefetch_related('tagged_pets').all()
+    search_form = SearchForm(request.GET or None)
     comment_form = CommentForm()
+
+    if search_form.is_valid():
+        query = search_form.cleaned_data.get('text')
+        all_photos = all_photos.filter(tagged_pets__name__icontains=query)
+
 
     context = {
         'photos': all_photos,
-        'comment_form':comment_form
+        'comment_form':comment_form,
+        'search_form':search_form
     }
 
     return render(request,'common/home-page.html', context)
