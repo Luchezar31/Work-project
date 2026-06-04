@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, resolve_url
+from django.views.generic import ListView, FormView
 from pyperclip import copy
 
 from common.forms import CommentForm, SearchForm
@@ -6,23 +7,38 @@ from common.models import Like
 from photos.models import Photo
 
 
-def common(request):
-    all_photos = Photo.objects.prefetch_related('tagged_pets').all()
-    search_form = SearchForm(request.GET or None)
-    comment_form = CommentForm()
 
-    if search_form.is_valid():
-        query = search_form.cleaned_data.get('text')
-        all_photos = all_photos.filter(tagged_pets__name__icontains=query)
+class HomePageView(ListView):
+    model = Photo
+    template_name = 'common/home-page.html'
+    context_object_name = 'photos'
+    paginate_by = 2
+    ordering = 'pk'
 
 
-    context = {
-        'photos': all_photos,
-        'comment_form':comment_form,
-        'search_form':search_form
-    }
+    def get_context_data(self,**kwargs):
+        kwargs.update({
+            'search_form': self.search_form,
+            'comment_form':CommentForm()
+        })
+        return super().get_context_data(**kwargs)
 
-    return render(request,'common/home-page.html', context)
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+
+        self.search_form = SearchForm(self.request.GET or None)
+
+        if  self.search_form.is_valid():
+
+            pet_name = self.search_form.cleaned_data.get('text')
+            if pet_name:
+                queryset = queryset.prefetch_related('tagged_pets','like_set').filter(
+                    tagged_pets__name__icontains=pet_name
+                ).distinct()
+        return queryset
+
 
 
 

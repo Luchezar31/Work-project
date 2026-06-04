@@ -87,11 +87,11 @@
 
         <!-- Start Tagged Pets -->
         {% for pet in photo.tagged_pets.all %}
-        <a href="{% url 'pet-details' username='username' pet_slug=pet.slug %}">
-            <p class="message">
-                <b>{{ pet }}</b>
-            </p>
-        </a>
+            <a href="{% url 'pet-details' username='username' pet_slug=pet.slug %}">
+                <p class="message">
+                    <b>{{ pet }}</b>
+                </p>
+            </a>
         {% endfor %}
         {% if not editable %}
             <a href="{% url 'photo-details' photo.pk %}">
@@ -111,4 +111,5 @@
         {% include 'common/comment-form.html' %}
 
     </div>
+
 </div>
