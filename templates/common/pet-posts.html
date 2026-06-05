@@ -103,7 +103,7 @@
 
         <h5 class="postTime">{{ photo.date_of_publication }}</h5>
 
-        {% if comments %}
+        {% if photo.comment_set.all and editable %}
             {% include 'common/comment-section.html' %}
         {% endif %}
 
