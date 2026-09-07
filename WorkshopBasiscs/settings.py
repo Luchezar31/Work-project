@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 from pathlib import Path
 
+from django.urls import reverse_lazy
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -83,7 +85,7 @@ WSGI_APPLICATION = 'WorkshopBasiscs.wsgi.application'
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "workshopp",
+        "NAME": "forum",
         "USER": "postgres",
         "PASSWORD": "ivaylo2009",
         "HOST": "127.0.0.1",
@@ -138,3 +140,8 @@ STATIC_ROOT = 'staticfiles'
 MEDIA_URL = 'media/'
 
 MEDIA_ROOT = BASE_DIR / 'media'
+
+AUTH_USER_MODEL = 'accounts.AppUserModel'
+
+LOGIN_REDIRECT_URL = reverse_lazy('home')
+

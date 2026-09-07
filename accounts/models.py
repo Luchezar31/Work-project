@@ -1,3 +1,54 @@
+from django.contrib.auth.base_user import AbstractBaseUser
+from django.contrib.auth.models import PermissionsMixin, AbstractUser
 from django.db import models
 
-# Create your models here.
+from accounts.managers import AppUserManager
+
+
+class AppUserModel(AbstractBaseUser, PermissionsMixin):
+    email = models.EmailField(
+        unique=True,
+    )
+
+    is_active = models.BooleanField(
+        default=True
+    )
+
+    is_staff = models.BooleanField(
+        default=False
+    )
+
+    USERNAME_FIELD = 'email'
+
+    objects = AppUserManager()
+
+
+class Profile(models.Model):
+
+    user = models.OneToOneField(
+        AppUserModel,
+        on_delete=models.CASCADE
+    )
+
+    first_name = models.CharField(
+        max_length=50,
+        blank=True,
+        null=True
+    )
+    last_name = models.CharField(
+        max_length=50,
+        blank=True,
+        null=True
+    )
+
+    date_of_birth=models.DateField(
+        blank=True,
+        null=True
+    )
+
+    profile_picture=models.URLField(
+        blank=True,
+        null=True
+    )
+
+
