@@ -2,6 +2,8 @@ from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import BaseUserCreationForm, UserChangeForm, AuthenticationForm
 
+from accounts.models import Profile
+
 UserModel = get_user_model()
 
 class AppUserCreationForm(BaseUserCreationForm):
@@ -32,3 +34,15 @@ class AppLoginForm(AuthenticationForm):
             }
         )
     )
+
+class ProfileEditForm(forms.ModelForm):
+
+    class Meta:
+        model = Profile
+        fields = ('first_name','last_name','date_of_birth','profile_picture')
+        labels = {
+            'first_name':'First Name',
+            'last_name': 'Last Name',
+            'date_of_birth': 'Date of birth',
+            'profile_picture': 'Profile picture'
+        }

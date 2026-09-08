@@ -1,19 +1,29 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, DetailView, UpdateView, DeleteView
 
 from common.forms import CommentForm
+from common.mixins import ProfileOwnerOnlyAccessMixin
 from pets.forms import PetCreateForm, PetEditForm, PetDeleteForm
 from pets.models import Pet
 
 
-class AddPetView(CreateView):
+class AddPetView(LoginRequiredMixin,CreateView):
     model = Pet
     form_class = PetCreateForm
     template_name = 'pets/pet-add-page.html'
 
     def get_success_url(self):
-        return reverse('profile-details',kwargs={'pk':1})
+        pet = self.object
+
+        return reverse('profile-details',kwargs={'pk':pet.user.profile.pk})
+
+    def form_valid(self,form):
+        pet = form.save(commit=False)
+        pet.user = self.request.user
+        pet.save()
+        return super().form_valid(form)
 
 
 class PetDetailsView(DetailView):
@@ -28,7 +38,7 @@ class PetDetailsView(DetailView):
         context['comment_form'] = CommentForm()
         return context
 
-class PetEditView(UpdateView):
+class PetEditView(ProfileOwnerOnlyAccessMixin,UpdateView):
     form_class = PetEditForm
     model = Pet
     template_name = 'pets/pet-edit-page.html'
@@ -36,7 +46,7 @@ class PetEditView(UpdateView):
 
     def get_success_url(self):
 
-        username = self.request.user.username or 'Anonymous'
+        username = self.request.user.profile.full_name or 'Anonymous'
         pet_slug = self.object.slug
 
 

@@ -1,19 +1,27 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy, reverse
 from django.views import View
 from django.views.generic import CreateView, DetailView, UpdateView, DeleteView
 
 from common.forms import CommentForm
+from common.mixins import ProfileOwnerOnlyAccessMixin
 from photos.forms import PhotoAddForm, PhotoEditForm
 from photos.models import Photo
 
 
-class PhotoAddView(CreateView):
+class PhotoAddView(LoginRequiredMixin,CreateView):
     form_class = PhotoAddForm
     success_url = reverse_lazy('home')
     template_name = 'photos/photo-add-page.html'
 
-class PhotoDetailsView(DetailView):
+    def form_valid(self,form):
+        photo = form.save(commit=False)
+        photo.user = self.request.user
+        photo.save()
+        return super().form_valid(form)
+
+class PhotoDetailsView(LoginRequiredMixin, DetailView):
     model = Photo
     template_name = 'photos/photo-details-page.html'
 
@@ -33,7 +41,7 @@ class PhotoDetailsView(DetailView):
 
 
 
-class PhotoEditView(UpdateView):
+class PhotoEditView(ProfileOwnerOnlyAccessMixin, UpdateView):
     model = Photo
     form_class = PhotoEditForm
     template_name = 'photos/photo-edit-page.html'

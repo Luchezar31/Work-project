@@ -1,3 +1,4 @@
+from django.db.models import Exists, OuterRef, Value, BooleanField
 from django.shortcuts import render, redirect, resolve_url
 from django.views.generic import ListView, FormView
 from pyperclip import copy
@@ -12,11 +13,13 @@ class HomePageView(ListView):
     model = Photo
     template_name = 'common/home-page.html'
     context_object_name = 'photos'
-    paginate_by = 2
+    paginate_by = 4
     ordering = 'pk'
 
 
     def get_context_data(self,**kwargs):
+
+
         kwargs.update({
             'search_form': self.search_form,
             'comment_form':CommentForm()
@@ -27,6 +30,20 @@ class HomePageView(ListView):
     def get_queryset(self):
         queryset = super().get_queryset()
 
+        if self.request.user.is_authenticated:
+            queryset = queryset.annotate(
+                has_liked=Exists(
+                    Like.objects.filter(
+                        to_photo=OuterRef('pk'),
+                        user=self.request.user
+                    )
+                )
+            )
+        else:
+
+            queryset = queryset.annotate(
+                has_liked=Value(False, output_field=BooleanField())
+            )
 
         self.search_form = SearchForm(self.request.GET or None)
 
@@ -44,12 +61,12 @@ class HomePageView(ListView):
 
 def like_view(request, photo_id):
     photo = Photo.objects.get(pk=photo_id)
-    liked_object = Like.objects.filter(to_photo_id=photo_id).first()
+    liked_object = Like.objects.filter(to_photo_id=photo_id,user=request.user).first()
 
     if liked_object:
         liked_object.delete()
     else:
-        like = Like(to_photo=photo)
+        like = Like(to_photo=photo,user=request.user)
         like.save()
 
     return redirect(request.META['HTTP_REFERER'] + f'#{photo.pk}')
@@ -71,6 +88,7 @@ def add_comment_view(request,photo_id):
         if comment_form.is_valid():
             comment = comment_form.save(commit=False)
             comment.to_photo = photo
+            comment.user = request.user
             comment.save()
             return redirect(request.META.get("HTTP_REFERER") + f'#{photo_id}')
 

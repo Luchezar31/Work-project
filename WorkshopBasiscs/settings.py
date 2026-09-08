@@ -145,3 +145,4 @@ AUTH_USER_MODEL = 'accounts.AppUserModel'
 
 LOGIN_REDIRECT_URL = reverse_lazy('home')
 
+LOGOUT_REDIRECT_URL = reverse_lazy('home')

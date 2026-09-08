@@ -9,16 +9,21 @@
                 <div class="profilepic">
                     <div class="profile_img">
                         <div class="image">
-                            <img src="{% static 'images/person.png' %}" alt="img8">
+                            {% if photo.user.profile.profile_picture %}
+                                <img src="{{ photo.user.profile.profile_picture }}" alt="">z
+                            {% else %}
+                                <img src="{% static 'images/person.png' %}" alt="img8">
+                            {% endif %}
+
                         </div>
                     </div>
                 </div>
             </a>
             <h3>
                 <!-- Link to User Profile Page -->
-                <a href="#">
+                <a href="{% url 'profile-details' photo.user.profile.pk %}">
                     <!-- if user has first name and last name -->
-                    {{ request.user.username|default:'Anonymous' }}
+                    {{ profile.full_name|default:'Anonymous' }}
                     <!-- else -->
                     <!-- show user username -->
                 </a>
@@ -26,7 +31,7 @@
                 <!-- if the photo has location -->
                 <span>{{ photo.location }}</span>
             </h3>
-            {% if editable %}
+            {% if editable  and request.user.pk == photo.user.pk %}
 
                 <div class="edit-delete-btns">
 
@@ -60,7 +65,7 @@
                 <!-- Start Like Button -->
                 <span class="heart">
                     <a href="{% url 'like' photo.pk %}">
-                        {% if photo.like_set.all %}
+                        {% if photo.has_liked %}
                             <i class="fa-solid fa-heart" style="color: #ed4040;"></i>
                         {% else %}
                             <i class="fa-regular fa-heart"></i>
@@ -87,9 +92,9 @@
 
         <!-- Start Tagged Pets -->
         {% for pet in photo.tagged_pets.all %}
-            <a href="{% url 'pet-details' username='username' pet_slug=pet.slug %}">
+            <a href="{% url 'pet-details' pet.user.profile.full_name pet.slug %}">
                 <p class="message">
-                    <b>{{ pet }}</b>
+                    <b>{{ pet.name }}</b>
                 </p>
             </a>
         {% endfor %}
