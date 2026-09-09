@@ -5,7 +5,7 @@ from django.db.models import Count, Sum
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, UpdateView, DetailView
+from django.views.generic import CreateView, DeleteView, UpdateView, DetailView
 
 from accounts.forms import AppUserCreationForm, AppLoginForm, ProfileEditForm
 from accounts.models import AppUserModel, Profile
@@ -77,13 +77,13 @@ class ProfileDetailsView(DetailView):
 
         return context
 
-def profile_details(request,pk):
-    return render(request,'accounts/profile-details-page.html')
 
-def profile_edit(request,pk):
-    return render(request,'accounts/profile-edit-page.html')
+class DeleteProfileView(DeleteView):
+    model = Profile
+    template_name = 'accounts/profile-delete-page.html'
+    success_url = reverse_lazy('home')
 
-def profile_delete(request,pk):
-    return render(request,'accounts/profile-delete-page.html')
+    def get_object(self, queryset = ...):
+        object = self.request.user
 
-
+        return object

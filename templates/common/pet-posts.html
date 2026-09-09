@@ -23,7 +23,7 @@
                 <!-- Link to User Profile Page -->
                 <a href="{% url 'profile-details' photo.user.profile.pk %}">
                     <!-- if user has first name and last name -->
-                    {{ profile.full_name|default:'Anonymous' }}
+                    {{ photo.user.profile.full_name|default:'Anonymous' }}
                     <!-- else -->
                     <!-- show user username -->
                 </a>

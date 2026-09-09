@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import BaseUserCreationForm, UserChangeForm, AuthenticationForm
+from django.forms import widgets
 
 from accounts.models import Profile
 
@@ -37,6 +38,8 @@ class AppLoginForm(AuthenticationForm):
 
 class ProfileEditForm(forms.ModelForm):
 
+
+
     class Meta:
         model = Profile
         fields = ('first_name','last_name','date_of_birth','profile_picture')
@@ -45,4 +48,8 @@ class ProfileEditForm(forms.ModelForm):
             'last_name': 'Last Name',
             'date_of_birth': 'Date of birth',
             'profile_picture': 'Profile picture'
+        }
+
+        widgets = {
+            'date_of_birth' : forms.DateInput(format='%Y-%m-%d', attrs={'type': 'date'})
         }

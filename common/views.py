@@ -2,6 +2,7 @@ from django.db.models import Exists, OuterRef, Value, BooleanField
 from django.shortcuts import render, redirect, resolve_url
 from django.views.generic import ListView, FormView
 from pyperclip import copy
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from common.forms import CommentForm, SearchForm
 from common.models import Like
