@@ -51,7 +51,7 @@
                     <li class="nav-item">
 
                         <!-- Link to Profile Page -->
-                        <a href="{% url 'profile-details' request.user.pk %}">
+                        <a href="{% url 'profile-details' request.user.profile.pk %}">
                             <i>Profile</i>
                         </a>
                     </li>

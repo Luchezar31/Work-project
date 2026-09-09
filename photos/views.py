@@ -21,7 +21,7 @@ class PhotoAddView(LoginRequiredMixin,CreateView):
         photo.save()
         return super().form_valid(form)
 
-class PhotoDetailsView(LoginRequiredMixin, DetailView):
+class PhotoDetailsView(DetailView):
     model = Photo
     template_name = 'photos/photo-details-page.html'
 
