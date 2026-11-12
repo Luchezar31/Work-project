@@ -49,7 +49,7 @@ class PhotoEditView(ProfileOwnerOnlyAccessMixin, UpdateView):
     def get_success_url(self):
         return reverse('photo-details',kwargs={'pk':self.object.pk})
 
-class PhotoDeleteView(View):
+class PhotoDeleteView(DeleteView):
 
 
     def get(self,request,*args,**kwargs):
